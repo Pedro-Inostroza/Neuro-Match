@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parte 2 — Código Auditado y Corregido</title>
+  <style>
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: #0D0208;
+      color: #e0d0f0;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+    }
+    h1 { color: #9B30FF; margin-bottom: 0.3rem; }
+    .subtitulo { color: #7A5E8A; font-size: 0.85rem; margin-bottom: 1.2rem; }
+    hr { border-color: #2a1040; margin: 1rem 0; }
+
+    #hud { display: flex; gap: 2rem; margin-bottom: 0.8rem; font-size: 0.9rem; color: #7A5E8A; }
+    #hud span { color: #9B30FF; }
+
+    #tablero {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 8px;
+      margin: 1rem 0;
+    }
+    .carta {
+      width: 80px; height: 80px;
+      background: #150818;
+      border: 2px solid #5C1F99;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; cursor: pointer; user-select: none;
+      border-radius: 3px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .carta:hover { border-color: #9B30FF; box-shadow: 0 0 10px rgba(155,48,255,0.4); }
+    .encontrada  { background: #1A0A00; border-color: #C47A2B; box-shadow: 0 0 10px rgba(196,122,43,0.4); }
+    .error       { border-color: #FF2244; box-shadow: 0 0 10px rgba(255,34,68,0.5); }
+
+    #mensaje { margin: 0.6rem 0; color: #9B30FF; font-size: 1rem; min-height: 1.4rem; }
+
+    button {
+      padding: 0.4rem 1.2rem;
+      background: transparent;
+      border: 1px solid #FF2244;
+      color: #FF2244;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+    button:hover { background: rgba(255,34,68,0.1); }
+
+    /* Sección de documentación de bugs */
+    .bugs-doc {
+      margin-top: 2rem;
+      border-top: 1px solid #2a1040;
+      padding-top: 1rem;
+    }
+    .bugs-doc h2 { color: #9B30FF; font-size: 1rem; margin-bottom: 1rem; }
+    .bug-item { margin-bottom: 1.2rem; padding: 0.8rem; background: #1A0A12; border-left: 3px solid #FF2244; }
+    .bug-item h3 { color: #FF2244; font-size: 0.8rem; margin-bottom: 0.4rem; }
+    .bug-item .fix { color: #22cc66; font-size: 0.8rem; margin-top: 0.4rem; }
+    .bug-item p { font-size: 0.8rem; color: #b0a0c0; line-height: 1.5; }
+    code { background: #0a0010; padding: 1px 4px; border-radius: 2px; color: #c084fc; font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+
+<h1>Parte 2 — Código Auditado y Corregido</h1>
+<p class="subtitulo">Version del codigo original con bugs documentados y corregidos. Funciona correctamente.</p>
+<hr />
+
+<div id="hud">
+  <div>MOVIMIENTOS: <span id="movimientos">0</span></div>
+</div>
+<div id="mensaje"></div>
+<div id="tablero"></div>
+<button id="reiniciar">[ REINICIAR ]</button>
+
+<div class="bugs-doc">
+  <h2>// BUGS ENCONTRADOS Y CORREGIDOS</h2>
+
+  <div class="bug-item">
+    <h3>BUG #1 — FUNCIONAL: sin bloqueo del tablero</h3>
+    <p>
+      El codigo original no bloqueaba el tablero mientras se resolvia un par.
+      Con clicks rapidos se podian voltear 3 cartas a la vez, acumulando mas de 2 indices
+      en el arreglo <code>volteadas[]</code>. Ademas, hacer doble click en la misma carta
+      la hacia coincidir consigo misma porque <code>a === b</code> y los emojis eran iguales.
+    </p>
+    <p class="fix">
+      FIX: se agrego <code>let bloqueado = false</code> como variable de estado.
+      Se activa al detectar el segundo click y se desactiva al final del <code>setTimeout</code>.
+      Se agregaron guardias: <code>if (bloqueado) return</code> y <code>if (volteadas.includes(i)) return</code>.
+    </p>
+  </div>
+
+  <div class="bug-item">
+    <h3>BUG #2 — ARQUITECTURA: listener por carta y lectura desde el DOM</h3>
+    <p>
+      El render original creaba un <code>addEventListener</code> dentro del bucle de cada carta,
+      generando N listeners nuevos en cada reinicio (fuga de memoria).
+      Ademas, la comparacion leia <code>div.textContent</code> del DOM en vez del estado,
+      violando la regla de fuente unica de verdad.
+    </p>
+    <p class="fix">
+      FIX: un unico <code>tablero.addEventListener('click', ...)</code> con delegacion de eventos.
+      La comparacion ahora lee desde el estado: <code>cartas[ia].emoji === cartas[ib].emoji</code>.
+    </p>
+  </div>
+
+  <div class="bug-item">
+    <h3>BUG #3 — SEGURIDAD: XSS con innerHTML</h3>
+    <p>
+      El mensaje de victoria usaba <code>innerHTML</code> para insertar texto que podia venir
+      del usuario. Si el nombre contenia <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>
+      u otro payload, se ejecutaba en el navegador (vulnerabilidad XSS).
+    </p>
+    <p class="fix">
+      FIX: reemplazado por <code>mensajeEl.textContent = ...</code> en todo el codigo.
+      textContent trata el contenido como texto plano, nunca como HTML.
+    </p>
+  </div>
+</div>
+
+<script>
+// =============================================================================
+// CODIGO CORREGIDO — todos los bugs documentados arriba estan resueltos aqui
+// =============================================================================
+
+const EMOJIS = ['dragon','sakura','lightning','crystal','skull','butterfly','moon','fire'];
+const SIMBOLOS = { dragon:'🐉', sakura:'🌸', lightning:'⚡', crystal:'🔮', skull:'💀', butterfly:'🦋', moon:'🌙', fire:'🔥' };
+
+const tableroEl     = document.getElementById('tablero');
+const mensajeEl     = document.getElementById('mensaje');
+const movimientosEl = document.getElementById('movimientos');
+
+let cartas = [];
+let volteadas = [];
+let movimientos = 0;
+let bloqueado = false; // BUG #1 FIX: estado de bloqueo explicito
+
+function barajar(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function inicializar() {
+  const pares = barajar([...EMOJIS, ...EMOJIS]);
+  cartas = pares.map((nombre, id) => ({ id, nombre, emoji: SIMBOLOS[nombre], encontrada: false }));
+  volteadas = [];
+  movimientos = 0;
+  bloqueado = false; // BUG #1 FIX: resetear bloqueo al reiniciar
+  // BUG #3 FIX: textContent, nunca innerHTML
+  mensajeEl.textContent = '';
+  movimientosEl.textContent = '0';
+  renderTablero();
+}
+
+function renderTablero() {
+  // BUG #2 FIX: limpiamos sin recrear listeners
+  while (tableroEl.firstChild) tableroEl.removeChild(tableroEl.firstChild);
+
+  const frag = document.createDocumentFragment();
+  cartas.forEach((carta) => {
+    const div = document.createElement('div');
+    div.className = 'carta' + (carta.encontrada ? ' encontrada' : '');
+    div.dataset.indice = carta.id;
+    // BUG #3 FIX: textContent, no innerHTML
+    div.textContent = carta.encontrada ? carta.emoji : '◈';
+    frag.appendChild(div);
+  });
+  tableroEl.appendChild(frag);
+}
+
+// BUG #2 FIX: un solo listener con delegacion de eventos, no uno por carta
+tableroEl.addEventListener('click', (e) => {
+  const div = e.target.closest('.carta');
+  if (!div) return;
+
+  const i = Number(div.dataset.indice);
+  const carta = cartas[i];
+
+  // BUG #1 FIX: guardias de bloqueo
+  if (bloqueado)               return; // tablero ocupado resolviendo par
+  if (carta.encontrada)        return; // ya emparejada
+  if (volteadas.includes(i))   return; // BUG #1 FIX: evita doble click en misma carta
+  if (volteadas.length >= 2)   return; // no voltear tercera carta
+
+  div.textContent = carta.emoji; // textContent, no innerHTML
+  volteadas.push(i);
+
+  if (volteadas.length === 2) {
+    movimientos++;
+    movimientosEl.textContent = movimientos;
+
+    const [ia, ib] = volteadas;
+    const a = cartas[ia];
+    const b = cartas[ib];
+
+    // BUG #2 FIX: comparamos desde el estado, no desde el DOM
+    if (a.nombre === b.nombre) {
+      a.encontrada = true;
+      b.encontrada = true;
+      tableroEl.querySelector('[data-indice="' + ia + '"]').classList.add('encontrada');
+      tableroEl.querySelector('[data-indice="' + ib + '"]').classList.add('encontrada');
+      volteadas = [];
+
+      if (cartas.every((c) => c.encontrada)) {
+        // BUG #3 FIX: textContent, no innerHTML
+        mensajeEl.textContent = '[ VICTORIA ] — Movimientos: ' + movimientos;
+      }
+    } else {
+      bloqueado = true; // BUG #1 FIX: bloquear como estado
+      const da = tableroEl.querySelector('[data-indice="' + ia + '"]');
+      const db = tableroEl.querySelector('[data-indice="' + ib + '"]');
+      if (da) da.classList.add('error');
+      if (db) db.classList.add('error');
+
+      setTimeout(() => {
+        if (da) { da.textContent = '◈'; da.classList.remove('error'); }
+        if (db) { db.textContent = '◈'; db.classList.remove('error'); }
+        a.volteada = false;
+        b.volteada = false;
+        volteadas = [];
+        bloqueado = false; // BUG #1 FIX: desbloquear despues del retardo
+      }, 900);
+    }
+  }
+});
+
+document.getElementById('reiniciar').addEventListener('click', inicializar);
+
+inicializar();
+</script>
+
+</body>
+</html>

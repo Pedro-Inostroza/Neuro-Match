@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEURO//MATCH — Juego de Memoria</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="hud-header">
+    <div class="logo">
+      <span class="logo-prefix">NEURO</span><span class="logo-sep">//</span><span class="logo-suffix">MATCH</span>
+    </div>
+    <div class="hud-stats">
+      <div class="stat-block">
+        <span class="stat-label">MOVIMIENTOS</span>
+        <span class="stat-value" id="contador">000</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">TIEMPO</span>
+        <span class="stat-value" id="cronometro">00:00</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">PAREJAS</span>
+        <span class="stat-value" id="parejas">0/0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="controls-bar">
+      <label class="select-label" for="dificultad">DIFICULTAD</label>
+      <select id="dificultad" class="cyber-select">
+        <option value="6">FÁCIL — 3×4</option>
+        <option value="8" selected>NORMAL — 4×4</option>
+        <option value="12">DIFÍCIL — 4×6</option>
+      </select>
+      <button id="btn-reiniciar" class="cyber-btn" aria-label="Reiniciar juego (R)">
+        <span class="btn-glitch" data-text="[ REINICIAR ]">[ REINICIAR ]</span>
+      </button>
+    </div>
+
+    <div id="tablero" class="tablero" role="grid" aria-label="Tablero de memoria"></div>
+
+    <div id="overlay-victoria" class="overlay-victoria hidden" role="dialog" aria-modal="true" aria-label="Victoria">
+      <div class="victory-box">
+        <div class="victory-title glitch-text" data-text="//VICTORIA//">
+          //VICTORIA//
+        </div>
+        <div class="victory-stats">
+          <p>Movimientos: <strong id="v-movimientos">—</strong></p>
+          <p>Tiempo: <strong id="v-tiempo">—</strong></p>
+          <p id="v-record" class="record-line hidden">🏆 ¡Nuevo récord!</p>
+        </div>
+        <button id="btn-jugar-de-nuevo" class="cyber-btn">
+          <span class="btn-glitch" data-text="[ JUGAR DE NUEVO ]">[ JUGAR DE NUEVO ]</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
