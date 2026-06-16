@@ -1,5 +1,5 @@
 /**
- * NEURO//MATCH — Juego de Memoria
+ * NEURO//MATCH — Juego de Memoria | TI3V31
  * Arquitectura:
  *  - Fuente única de verdad: objeto `state`
  *  - La UI se dibuja DESDE el estado, nunca se lee del DOM
