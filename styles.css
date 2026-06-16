@@ -234,6 +234,7 @@ body {
 }
 
 /* ── CARTA ────────────────────────────────────── */
+/* cartas: flip 3D con preserve-3d */
 .carta {
   aspect-ratio: 1;
   cursor: pointer;
