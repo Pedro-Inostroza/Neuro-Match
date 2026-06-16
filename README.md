@@ -34,3 +34,6 @@ Agregaría sonidos individuales para cada carta al voltearla y al encontrar una 
 
 **Controles:** clic para voltear · tecla `R` para reiniciar · selector de dificultad para cambiar el tamaño del tablero
 *Entrega semana DOM & Eventos — TI3V31*
+
+## Demo en vivo
+Juega aquí: https://pedro-inostroza.github.io/Neuro-Match/
