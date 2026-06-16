@@ -39,6 +39,7 @@ const state = {
 };
 
 // ── AUDIO (Web Audio API — sin archivos externos) ─────────────────────────────
+// síntesis pura: drones, pad armónico, arpeggio y ruido filtrado
 //
 // Dos capas de audio:
 //   1. MÚSICA AMBIENTAL ESPACIAL — drones, pad armónico, arpegios lentos y
