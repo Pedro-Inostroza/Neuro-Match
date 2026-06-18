@@ -10,7 +10,7 @@ Usé IA para generar la base del HTML, los estilos cyberpunk y la síntesis de a
 
 Pero tuve que corregir tres errores importantes que la IA entregó mal:
 
-  1.La primera versión ponía un `addEventListener` dentro del bucle que crea las cartas, es decir, un listener por cada carta. Eso está mal porque cuando el jugador reinicia y se borra el tablero, esos listeners quedan colgados en memoria. Lo corregí con un solo listener en el contenedor (`#tablero`) usando delegación de eventos.
+  1. La primera versión ponía un `addEventListener` dentro del bucle que crea las cartas, es decir, un listener por cada carta. Eso está mal porque cuando el jugador reinicia y se borra el tablero, esos listeners quedan colgados en memoria. Lo corregí con un solo listener en el contenedor (`#tablero`) usando delegación de eventos.
 
   2. El bloqueo del tablero lo hacía con una clase CSS (`tablero.classList.add('bloqueado')`). Eso es un truco visual, no lógica real: si el CSS no carga, el bloqueo desaparece. Lo reemplacé por `state.bloqueado = true`, que es estado puro de JavaScript.
 
