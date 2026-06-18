@@ -4,17 +4,17 @@ Proyecto TI3V31 · Programación Front End · Para abrir: doble clic en `index.h
 
 ---
 
-## ¿Dónde ayudó la IA y dónde se equivocó?
+# ¿Dónde ayudó la IA y dónde se equivocó?
 
-Usé IA (Claude) para generar la base del HTML, los estilos cyberpunk y la síntesis de audio con Web Audio API. Me ahorró tiempo en las partes más mecánicas.
+Usé IA para generar la base del HTML, los estilos cyberpunk y la síntesis de audio con Web Audio API. Me ahorró tiempo en las partes más mecánicas.
 
 Pero tuve que corregir tres errores importantes que la IA entregó mal:
 
-**1.** La primera versión ponía un `addEventListener` dentro del bucle que crea las cartas, es decir, un listener por cada carta. Eso está mal porque cuando el jugador reinicia y se borra el tablero, esos listeners quedan colgados en memoria. Lo corregí con un solo listener en el contenedor (`#tablero`) usando delegación de eventos.
+1.La primera versión ponía un `addEventListener` dentro del bucle que crea las cartas, es decir, un listener por cada carta. Eso está mal porque cuando el jugador reinicia y se borra el tablero, esos listeners quedan colgados en memoria. Lo corregí con un solo listener en el contenedor (`#tablero`) usando delegación de eventos.
 
-**2.** El bloqueo del tablero lo hacía con una clase CSS (`tablero.classList.add('bloqueado')`). Eso es un truco visual, no lógica real: si el CSS no carga, el bloqueo desaparece. Lo reemplacé por `state.bloqueado = true`, que es estado puro de JavaScript.
+2. El bloqueo del tablero lo hacía con una clase CSS (`tablero.classList.add('bloqueado')`). Eso es un truco visual, no lógica real: si el CSS no carga, el bloqueo desaparece. Lo reemplacé por `state.bloqueado = true`, que es estado puro de JavaScript.
 
-**3.** En el código de la Parte 2, el mensaje de victoria usaba `innerHTML` para mostrar texto que podría venir del usuario. Eso permite inyectar código malicioso (XSS). Lo corregí usando `textContent`, que siempre trata el contenido como texto plano.
+3. En el código de la Parte 2, el mensaje de victoria usaba `innerHTML` para mostrar texto que podría venir del usuario. Eso permite inyectar código malicioso (XSS). Lo corregí usando `textContent`, que siempre trata el contenido como texto plano.
 
 ---
 
@@ -33,7 +33,8 @@ Agregaría sonidos individuales para cada carta al voltearla y al encontrar una 
 ---
 
 **Controles:** clic para voltear · tecla `R` para reiniciar · selector de dificultad para cambiar el tamaño del tablero
-*Entrega semana DOM & Eventos — TI3V31*
 
 ## Demo en vivo
+
 Juega aquí: https://pedro-inostroza.github.io/Neuro-Match/
+Código Auditado y Corregido: https://pedro-inostroza.github.io/Neuro-Match/parte2_corregido.html
