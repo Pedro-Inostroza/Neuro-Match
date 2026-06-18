@@ -37,4 +37,5 @@ Agregaría sonidos individuales para cada carta al voltearla y al encontrar una 
 ## Demo en vivo
 
 Juega aquí: https://pedro-inostroza.github.io/Neuro-Match/
+
 Código Auditado y Corregido: https://pedro-inostroza.github.io/Neuro-Match/parte2_corregido.html
